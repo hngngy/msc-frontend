@@ -1,7 +1,3 @@
-<script setup lang="ts">
-
-</script>
-
 <template>
   <div class="row row-cols-1 row-cols-md-3 g-4">
     <div class="col">
@@ -43,43 +39,28 @@
   </div>
 </template>
 
-<script>
-export default{
-  // eslint-disable-next-line vue/multi-word-component-names
-  name: 'User',
-  data (){
-    return{
-      users:[
-        {
-          id: 1,
-          nachname: 'Nguyen',
-          vorname: 'Hoang',
-          studiengang: 'Wirtschaftsinformatik'
-        },
-        {
-          id: 2,
-          nachname: 'Nothelfer',
-          vorname: 'Daniel',
-          studiengang: 'Wirtschaftsinformatik'
-        }
-      ]
-    }
-  },
-  methods: {
-    loadUsers(){
-      const endpoint = 'http://localhost:8080'
-      const requestOptions = {
-        method: 'GET',
-        redirect: 'follow'
-      }
-      fetch(endpoint, requestOptions)
-          .then(response => response.json())
-          .then(result => result.forEach(user => {this.items.push(user)
-          }))
-          .catch(error => console.log('error', error))
-    }
+<script setup lang="ts">
+import { ref } from 'vue';
+
+const users = ref([]);
+
+async function loadUsers() {
+  const endpoint = 'http://localhost:8080/users/1';
+  const requestOptions: RequestInit = {
+    method: 'GET',
+    redirect: 'follow' as RequestRedirect
+  };
+
+  const response = await fetch(endpoint, requestOptions);
+
+  if (!response.ok) {
+    throw new Error("Something went wrong");
   }
+
+  console.log(await response.json());
 }
+
+
 </script>
 
 <style scoped>

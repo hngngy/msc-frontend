@@ -1,9 +1,8 @@
 <template>
   <h3> {{ title }} </h3>
   <div>
-    <input v-model="nachnameField" placeholder="Name" type="text">
-    <input v-model="vornameField" placeholder="Vorname" type="text">
-    <input v-model="studiengangField" placeholder="Studiengang" @keyup.enter="save()">
+    <input v-model="nameField" placeholder="Name" type="text">
+    <input v-model="priceField" placeholder="Price" @keyup.enter="save()">
     <button type="button" @click="save()">Save</button>
   </div>
   <div>
@@ -11,8 +10,7 @@
       <thead>
       <tr>
         <th>Name</th>
-        <th>Vorname</th>
-        <th>Studigang</th>
+        <th>Price</th>
       </tr>
       </thead>
       <tbody>
@@ -20,14 +18,12 @@
         <td colspan="2">No products yet</td>
       </tr>
       <tr v-for="item in items" :key="item.id">
-        <td>{{item.nachname}}</td>
-        <td>{{item.vorname}}</td>
-        <td>{{item.studiengang}}</td>
+        <td>{{item.name}}</td>
+        <td>{{item.price}}</td>
       </tr>
       <tr>
-        <td>{{ nachnameField }}</td>
-        <td>{{ vornameField }}</td>
-        <td>{{ studiengangField }}</td>
+        <td>{{ nameField }}</td>
+        <td>{{ priceField }}</td>
       </tr>
       </tbody>
     </table>
@@ -42,33 +38,33 @@ defineProps<{
   title: string
 }>()
 
-type Benutzer = { id?: number, nachname: string, vorname: string, studiengang: string }
+type Thing = { id?: number, name: string, price: number }
 
-const items: Ref<Benutzer[]> = ref([])
-const nachnameField = ref('')
-const vornameField = ref('')
-const studiengangField = ('')
+const items: Ref<Thing[]> = ref([])
+const nameField = ref('')
+const priceField = ref(0)
 
-function loadUsers () {
-  const endpoint ='http://localhost:8080/users'
+function loadThings () {
+  //const baseUrl =
+  const endpoint ='http://localhost:8080/things'
   const requestOptions: RequestInit = {
     method: 'GET',
     redirect: 'follow',
   }
   fetch(endpoint, requestOptions)
       .then(response => response.json())
-      .then(result => result.forEach((thing: Benutzer) => {
+      .then(result => result.forEach((thing: Thing) => {
         items.value.push(thing)
       }))
       .catch(error => console.log('error', error))
 }
 
 function save () {
-  const endpoint ='http://localhost:8080/users'
-  const data: Benutzer = {
-    nachname: nachnameField.value,
-    vorname: vornameField.value,
-    studiengang: studiengangField.valueOf()
+  //const baseUrl = import.meta.env.VITE_BACKEND_BASE_URL // 'http://localhost:8080' in dev mode
+  const endpoint = 'http://localhost:8080/things'
+  const data: Thing = {
+    name: nameField.value,
+    price: priceField.value
   }
   const requestOptions: RequestInit = {
     method: 'POST',
@@ -87,7 +83,7 @@ function save () {
 
 // Lifecycle hooks
 onMounted(() => {
-  loadUsers()
+  loadThings()
 })
 </script>
 
